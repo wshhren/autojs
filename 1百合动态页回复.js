@@ -15,53 +15,32 @@ let myapp = {
 let 相似页 = id("bh_square_dynamic_details_title").text("动态详情");
 let 发送 = id("comment_panel_send").text("发送");
 
+while (true) {
+    sleep(55);
+    if (相似页.exists()) {
+        sleep(155);
+        let D1 = 相似页.findOne().bounds().bottom; // 评论页卡片底部坐标
 
-var component = 相似页.findOne(); // 使用id()或其他选择器找到组件
+        let nicknameViews = id("viewholder_comments_nickname")
+            .boundsInside(1, D1, X1 * 0.6, Y1 * 0.95).find();
 
-// 如果找到了组件，打印它的所有信息
-if (component) {
-    log(component); // 直接打印组件信息（包括属性）
-    
-    // 逐一打印组件的主要属性
-    log("getText: " + component.getText());
+        if (nicknameViews.length === 0) {
+            toast("没有找到昵称组件");
+            swipe(X1 * 0.5, Y1 * 0.25, X1 * 0.5, Y1 * 0.8, SLIDE_DURATION);
+            continue; // 如果没有找到，跳过本次循环
+        }
 
-    log("Text: " + component.text());
-    log("Description: " + component.desc());
-    log("Class Name: " + component.className());
-    log("Bounds: " + component.bounds());
-    log("Enabled: " + component.enabled());
-    log("Clickable: " + component.clickable());
-    log("Selected: " + component.selected());
-    log("Visible: " + component.visibleToUser());
-} else {
-    log("没有找到该组件");
+        let allReplied = true; // 标志变量，初始设为 true
+
+        nicknameViews.forEach(replyToNickname);
+
+        if (allReplied) {
+            toast("所有昵称均已回复过，执行滑动操作");
+            swipe(X1 * 0.5, Y1 * 0.25, X1 * 0.5, Y1 * 0.8, SLIDE_DURATION);
+            sleep(2555);
+        }
+    }
 }
-// while (true) {
-//     sleep(55);
-//     if (相似页.exists()) {
-//         sleep(155);
-//         let D1 = 相似页.findOne().bounds().bottom; // 评论页卡片底部坐标
-
-//         let nicknameViews = id("viewholder_comments_nickname")
-//             .boundsInside(1, D1, X1 * 0.6, Y1 * 0.95).find();
-
-//         if (nicknameViews.length === 0) {
-//             toast("没有找到昵称组件");
-//             swipe(X1 * 0.5, Y1 * 0.25, X1 * 0.5, Y1 * 0.8, SLIDE_DURATION);
-//             continue; // 如果没有找到，跳过本次循环
-//         }
-
-//         let allReplied = true; // 标志变量，初始设为 true
-
-//         nicknameViews.forEach(replyToNickname);
-
-//         if (allReplied) {
-//             toast("所有昵称均已回复过，执行滑动操作");
-//             swipe(X1 * 0.5, Y1 * 0.25, X1 * 0.5, Y1 * 0.8, SLIDE_DURATION);
-//             sleep(2555);
-//         }
-//     }
-// }
 
 function replyToNickname(nicknameView) {
     let nicknameText = nicknameView.text();
